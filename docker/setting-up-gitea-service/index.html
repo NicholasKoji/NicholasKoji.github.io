@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在CentOS上使用Docker Compose搭建Gitea服务 | 阿栋的博客 | 翻身不粘锅</title>
+
+  
+  <meta name="author" content="A栋">
+  
+
+  
+  <meta name="description" content="随笔随记，遇到什么记录什么，主要撰写学习大前端路上遇到的难题和心得。共勉">
+  
+
+  
+  <meta name="keywords" content="blog">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="在CentOS上使用Docker Compose搭建Gitea服务"/>
+
+  <meta property="og:site_name" content="阿栋的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="阿栋的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">阿栋的博客</a>
+    </h1>
+    <p class="site-description">翻身不粘锅</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>在CentOS上使用Docker Compose搭建Gitea服务</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/docker/setting-up-gitea-service/" rel="bookmark">
+        <time class="entry-date published" datetime="2020-07-27T19:17:13.000Z">
+          2020-07-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><em>本文默认你已安装了 <a href="https://docs.docker.com/engine/install/centos/" target="_blank" rel="noopener">docker</a>和 <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">docker-compose</a></em></p>
+<p>因为gitlab太吃内存了，个人要搭私服还是挺吃力的，相比于gitea就友好的多了。安装简单、轻量、占用资源少，非常适合小团队开发。下面就来简单举例使用gitea搭建git服务</p>
+<a id="more"></a>
+<h1 id="使用Docker安装"><a href="#使用Docker安装" class="headerlink" title="使用Docker安装"></a>使用Docker安装</h1><p>一句命令搞定</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name=gitea -p 10022:22 -p 10080:3000 -v /var/lib/gitea:/data gitea/gitea:latest</span><br></pre></td></tr></table></figure>
+
+<p>容器名为gitea，SSH公开端口为10022，gitea访问端口为10080，工作目录映射到/var/lib/gitea目录下</p>
+<p>gitea中文网链接：<a href="https://docs.gitea.io/zh-cn/install-with-docker/" target="_blank" rel="noopener">https://docs.gitea.io/zh-cn/install-with-docker/</a></p>
+<p>gitea官网链接：<a href="https://docs.gitea.io/en-us/install-with-docker/" target="_blank" rel="noopener">https://docs.gitea.io/en-us/install-with-docker/</a></p>
+<h1 id="使用Docker-Compose安装"><a href="#使用Docker-Compose安装" class="headerlink" title="使用Docker Compose安装"></a>使用Docker Compose安装</h1><p>gitea官网也是推荐的docker compose来运行gitea，官网提供了MySQL、PostgreSQL和Sqlite三个数据库，我们使用PostgreSQL来做示范。以下是docker-compose.yml文件内容：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">"2"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">gitea:</span></span><br><span class="line">    <span class="attr">external:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">server:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">gitea/gitea:latest</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">USER_UID=1000</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">USER_GID=1000</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DB_TYPE=postgres</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DB_HOST=db:5432</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DB_NAME=gitea</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DB_USER=gitea</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DB_PASSWD=gitea</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">gitea</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./gitea:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/etc/timezone:/etc/timezone:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"10080:3000"</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"10022:22"</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres:9.6</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_USER=gitea</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_PASSWORD=gitea</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_DB=gitea</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">gitea</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./postgres:/var/lib/postgresql/data</span></span><br></pre></td></tr></table></figure>
+
+<p>在docker-compose.yml所在的文件夹下执行<code>docker-compose up -d</code>命令安装gitea，使用<code>docker-compose ps</code>查看gitea是否启动，或者用<code>docker-compose logs</code>查看日志</p>
+<p>在防火墙中放行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --add-port=13800/tcp --permanent</span><br><span class="line">firewall-cmd --add-port=13822/tcp --permanent</span><br><span class="line"><span class="meta">#</span><span class="bash"> 防火墙未开启使用</span></span><br><span class="line">systemctl start firewalld</span><br></pre></td></tr></table></figure>
+
+<p>重启防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+<p>然后访问<a href="http://IP:10080" target="_blank" rel="noopener">http://IP:10080</a> ，点击登录，配置gitea，此处要<strong>注意</strong>：</p>
+<ul>
+<li><strong>SSH服务域名</strong>：你的IP或域名</li>
+<li><strong>SSH服务端口</strong>：使用在Docker容器公开的端口<em>（像10080:22，22是Docker的内部监听端口，10080是Docker的公开端口）</em></li>
+<li><strong>HTTP服务端口</strong>：使用Docker的内部监听端口3000<em>（如果此处填写错误会导致 gitea初始化一直失败，只能删除重装容器）</em></li>
+<li><strong>Gitea基本URL</strong>：你的IP或域名 + HTTP公开端口，<a href="http://IP:10080/" target="_blank" rel="noopener">http://IP:10080/</a></li>
+</ul>
+<p>数据库设置不用改，在底部配置管理员账号密码，点击安装，等待半分钟gitea初始化完成</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/git/">git</a>, <a href="/categories/docker/">docker</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/docker/">docker</a><a href="/tags/docker-compose/">docker compose</a><a href="/tags/gitea/">gitea</a><a href="/tags/git/">git</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+	<section id="comment" class="comment">
+		<div id="gitalk-container"></div>
+	</section>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+	<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+	<script>
+		var gitalk = new Gitalk({
+			clientID: '1571fb8dcfe72a03e4ad',
+			clientSecret: '7c96e2aab4e22aec865b7821e409b8b876f5e35b',
+			repo: 'NicholasKoji.github.io',
+			owner: 'NicholasKoji',
+			admin: ['NicholasKoji'],
+			id: location.pathname,
+			distractionFreeMode: false
+		})
+
+		gitalk.render('gitalk-container')
+	</script>
+
+
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 A栋
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
