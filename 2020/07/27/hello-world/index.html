@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | 阿栋的博客 | 随笔随记</title>
+  <title>Hello World | 阿栋的博客 | 翻身不粘锅</title>
 
   
   <meta name="author" content="A栋">
   
 
   
-  <meta name="description" content="翻身不粘锅">
+  <meta name="description" content="随笔随记，遇到什么记录什么，主要撰写学习大前端路上遇到的难题和心得。共勉">
   
 
   
@@ -44,7 +44,7 @@
     <h1 class="site-title">
       <a href="/">阿栋的博客</a>
     </h1>
-    <p class="site-description">随笔随记</p>
+    <p class="site-description">翻身不粘锅</p>
   </div>
   <nav class="site-navigation">
     <ul>
@@ -119,24 +119,26 @@
 </article>
 
   
-
-
 	<section id="comment" class="comment">
-		<div id="gitment"></div>
+		<div id="gitalk-container"></div>
 	</section>
-	<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-	<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+	<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 	<script>
-		var gitment = new Gitment({
-			owner: '45407982',
+		var gitalk = new Gitalk({
+			clientID: '1571fb8dcfe72a03e4ad',
+			clientSecret: '7c96e2aab4e22aec865b7821e409b8b876f5e35b',
 			repo: 'NicholasKoji.github.io',
-			oauth: {
-				client_id: '1571fb8dcfe72a03e4ad',
-				client_secret: '7c96e2aab4e22aec865b7821e409b8b876f5e35b',
-			},
+			owner: '45407982',
+			admin: ['45407982'],
+			id: location.pathname,
+			distractionFreeMode: false
 		})
-		gitment.render('gitment')
+
+		gitalk.render('gitalk-container')
 	</script>
+
+
 
 
 
