@@ -118,18 +118,37 @@
 <p><img src="/images/image-20200728160729339.png" alt="image-20200728160729339"></p>
 <p>测试推送，成功</p>
 <p><img src="/images/image-20200728161415907.png" alt="image-20200728161415907"></p>
-<h1 id="方案二、使用Gitea插件，自动生成webhook（推荐）"><a href="#方案二、使用Gitea插件，自动生成webhook（推荐）" class="headerlink" title="方案二、使用Gitea插件，自动生成webhook（推荐）"></a>方案二、使用Gitea插件，自动生成webhook（推荐）</h1><ol>
-<li>使用gitea插件，在插件管理搜索gitea安装完成后重启</li>
-<li>进入Jenkins的系统配置，找到gitea     servers，输入服务名称和gitea的访问地址</li>
-</ol>
-<p>勾选Manage hooks管理钩子，让Jenkins配置你gitea项目的webhook</p>
-<p>添加凭证，推荐使用gitea管理员的token，范围选择系统</p>
-<ol>
-<li>使用管理员账户登录gitea，创建组织，创建一个用户如“Jenkins”添加到刚才创建的组织中退出gitea，用“Jenkins”账号登录，进入个人设置 -&gt; 应用，生成token并复制</li>
-<li>在Jenkins新建任务，类型选择Gitea     Organization，Servers服务会自动选择为系统配置里设置的。添加凭证，用刚才“Jenkins”用户生成的token。Owner组织名称需要和gitea的组织名一致，保存</li>
-<li>在gitea组织内创建项目，项目的根目录下需要创建Jenkinsfile文件（Gitea     Organization就是靠Jenkinsfile文件来识别项目）。创建完毕后，在Jenkins的组织文件夹（刚才新建的任务）内会生成同名项目，在gitea的项目设置里，也会自动生成webhook</li>
-</ol>
-<p>Jenkinsfile是脚本文件，和Linux的shell文件类似，具体操作看第七周的最后四节或<a href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/" target="_blank" rel="noopener">官方文档</a></p>
+<h1 id="方案二、使用Gitea插件，自动生成webhook（推荐）"><a href="#方案二、使用Gitea插件，自动生成webhook（推荐）" class="headerlink" title="方案二、使用Gitea插件，自动生成webhook（推荐）"></a>方案二、使用Gitea插件，自动生成webhook（推荐）</h1><h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>进入<strong>系统管理</strong> -&gt; <strong>插件管理</strong>，安装gitea插件并重启</p>
+<p><img src="/images/image-20200728170237434.png" alt="image-20200728170237434"></p>
+<h3 id="配置Gitea服务"><a href="#配置Gitea服务" class="headerlink" title="配置Gitea服务"></a>配置Gitea服务</h3><p>进入系统管理 -&gt; 系统配置 -&gt; Gitea Server，新增gitea服务。设置名称和gitea的访问地址，勾选Manage hooks让gitea服务自动帮你在项目新增web钩子。添加凭证推荐用gitea管理员的token， 在gitea的个人设置 -&gt; 应用里生成令牌（token），凭证添加范围选择系统</p>
+<p><img src="/images/image-20200728172742247.png" alt="image-20200728172742247"></p>
+<p><img src="/images/image-20200728172439864.png" alt="image-20200728172439864"></p>
+<p><img src="/images/image-20200728172634946.png" alt="image-20200728172634946"></p>
+<h3 id="创建组织和生成“jenkins”token"><a href="#创建组织和生成“jenkins”token" class="headerlink" title="创建组织和生成“jenkins”token"></a>创建组织和生成“jenkins”token</h3><p>使用管理员账户登录gitea，创建组织</p>
+<p><img src="/images/image-20200728175452658.png" alt="image-20200728175452658"></p>
+<p>进入<strong>管理后台</strong> -&gt; <strong>账户管理</strong>，创建用户名为“jenkins”的账户（该号专门用于生成token）并添加到刚才创建的组织中</p>
+<p><img src="/images/image-20200728180217199.png" alt="image-20200728180217199"></p>
+<p><img src="/images/image-20200728180244077.png" alt="image-20200728180244077"></p>
+<p>退出gitea，用“Jenkins”账号登录，进入<strong>个人设置</strong> -&gt; <strong>应用</strong>，生成token并复制</p>
+<p><img src="/images/image-20200728180548791.png" alt="image-20200728180548791"></p>
+<h3 id="新建jenkins任务"><a href="#新建jenkins任务" class="headerlink" title="新建jenkins任务"></a>新建jenkins任务</h3><p>新建任务，类型选择Gitea Organization</p>
+<p><img src="/images/image-20200728181014043.png" alt="image-20200728181014043"></p>
+<p>配置<strong>Projects</strong> -&gt; <strong>Gitea Organization</strong>，添加凭证，范围选该项目，使用刚才“jenkins”账户生成的token。Owner组织名称需要和gitea的组织名一致，保存</p>
+<p><img src="/images/image-20200728181351366.png" alt="image-20200728181351366"></p>
+<p>因为还未在组织创建仓库，所以扫描出来的存储库为0</p>
+<p><img src="/images/image-20200728181753105.png" alt="image-20200728181753105"></p>
+<h3 id="创建gitea项目"><a href="#创建gitea项目" class="headerlink" title="创建gitea项目"></a>创建gitea项目</h3><p>拥有者选刚才创建的组织，其他默认</p>
+<p><img src="/images/image-20200728181945175.png" alt="image-20200728181945175"></p>
+<p>用SSH拉取该项目，在根目录创建名为Jenkinsfile的脚本文件，添加脚本示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Jenkinsfile</span></span><br><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line"></span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">'Build'</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">'hello world'</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Gitea Organization就是靠Jenkinsfile文件来识别项目。推送完毕后，在Jenkins的组织文件夹（刚才新建的任务）内会生成同名项目，在gitea的项目设置里，也会自动生成webhook</p>
+<p><img src="/images/image-20200728183247985.png" alt="image-20200728183247985"></p>
+<p><img src="/images/image-20200728183238041.png" alt="image-20200728183238041"></p>
+<h3 id="测试推送-1"><a href="#测试推送-1" class="headerlink" title="测试推送"></a>测试推送</h3><p>成功</p>
+<p><img src="/images/image-20200728183538380.png" alt="image-20200728183538380"></p>
+<p><img src="/images/image-20200728183541485.png" alt="image-20200728183541485"></p>
+<p><em>Jenkinsfile是脚本文件，和 Linux的 shell文件类似，具体操作看第七周的最后四节或<a href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/" target="_blank" rel="noopener">官方文档</a></em></p>
 
       
     </div>
