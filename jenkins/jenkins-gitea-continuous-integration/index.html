@@ -112,7 +112,7 @@
 <p><img src="/images/image-20200728161128096.png" alt="image-20200728161128096"></p>
 <p>这是因为Jenkins的跨域问题。不过自2.204.6版本开始，Jenkins就删除了禁用跨站请求伪造保护的功能，现在需要添加凭证到请求中才可访问</p>
 </blockquote>
-<p>进入jenkins个人设置 -&gt; API Token，生成新token并复制</p>
+<p>进入jenkins个人设置 -&gt; <strong>API Token</strong>，生成新token并复制</p>
 <p><img src="/images/image-20200728160314948.png" alt="image-20200728160314948"></p>
 <p>重新配置web钩子，新模式如下：jenkinsID(登录名):token@Jenkins访问地址/job/Jenkins项目名/build?token=Jenkins项目中配置的身份验证令牌</p>
 <p><img src="/images/image-20200728160729339.png" alt="image-20200728160729339"></p>
@@ -120,8 +120,9 @@
 <p><img src="/images/image-20200728161415907.png" alt="image-20200728161415907"></p>
 <h1 id="方案二、使用Gitea插件，自动生成webhook（推荐）"><a href="#方案二、使用Gitea插件，自动生成webhook（推荐）" class="headerlink" title="方案二、使用Gitea插件，自动生成webhook（推荐）"></a>方案二、使用Gitea插件，自动生成webhook（推荐）</h1><h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>进入<strong>系统管理</strong> -&gt; <strong>插件管理</strong>，安装gitea插件并重启</p>
 <p><img src="/images/image-20200728170237434.png" alt="image-20200728170237434"></p>
-<h3 id="配置Gitea服务"><a href="#配置Gitea服务" class="headerlink" title="配置Gitea服务"></a>配置Gitea服务</h3><p>进入系统管理 -&gt; 系统配置 -&gt; Gitea Server，新增gitea服务。设置名称和gitea的访问地址，勾选Manage hooks让gitea服务自动帮你在项目新增web钩子。添加凭证推荐用gitea管理员的token， 在gitea的个人设置 -&gt; 应用里生成令牌（token），凭证添加范围选择系统</p>
+<h3 id="配置Gitea服务"><a href="#配置Gitea服务" class="headerlink" title="配置Gitea服务"></a>配置Gitea服务</h3><p>进入<strong>系统管理</strong> -&gt; <strong>系统配置</strong> -&gt; <strong>Gitea Server</strong>，新增gitea服务。设置名称和gitea的访问地址，勾选Manage hooks让gitea服务自动帮你在项目新增web钩子</p>
 <p><img src="/images/image-20200728172742247.png" alt="image-20200728172742247"></p>
+<p>添加凭证推荐用gitea管理员的token， 在gitea的<strong>个人设置</strong> -&gt; <strong>应用</strong>里生成令牌（token），凭证添加范围选择系统</p>
 <p><img src="/images/image-20200728172439864.png" alt="image-20200728172439864"></p>
 <p><img src="/images/image-20200728172634946.png" alt="image-20200728172634946"></p>
 <h3 id="创建组织和生成“jenkins”token"><a href="#创建组织和生成“jenkins”token" class="headerlink" title="创建组织和生成“jenkins”token"></a>创建组织和生成“jenkins”token</h3><p>使用管理员账户登录gitea，创建组织</p>
@@ -148,7 +149,7 @@
 <h3 id="测试推送-1"><a href="#测试推送-1" class="headerlink" title="测试推送"></a>测试推送</h3><p>成功</p>
 <p><img src="/images/image-20200728183538380.png" alt="image-20200728183538380"></p>
 <p><img src="/images/image-20200728183541485.png" alt="image-20200728183541485"></p>
-<p><em>Jenkinsfile是脚本文件，和 Linux的 shell文件类似，具体操作看第七周的最后四节或<a href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/" target="_blank" rel="noopener">官方文档</a></em></p>
+<p><em>Jenkinsfile是脚本文件，和 Linux的 shell文件类似，具体操作看<a href="https://class.imooc.com/lesson/1165#mid=28189" target="_blank" rel="noopener">第七周的最后四节</a>或<a href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/" target="_blank" rel="noopener">官方文档</a></em></p>
 
       
     </div>
