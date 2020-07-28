@@ -83,55 +83,10 @@
   <div class="article-content">
     <div class="entry">
       
-        <a id="more"></a>
-<p><em>本文默认你已安装 <a href="https://www.jenkins.io/zh/doc/book/installing/" target="_blank" rel="noopener">jenkins</a>和 <a href="https://docs.gitea.io/en-us/install-with-docker/" target="_blank" rel="noopener">gitea</a></em></p>
+        <p><em>本文默认你已安装 <a href="https://www.jenkins.io/zh/doc/book/installing/" target="_blank" rel="noopener">jenkins</a>和 <a href="https://docs.gitea.io/en-us/install-with-docker/" target="_blank" rel="noopener">gitea</a></em></p>
 <p>持续集成是指开发代码的实践，当上传代码之后，立即进行单元测试，与原代码相比判断是否可以集成到一起。每次集成通过自动构建的校验，发现构建中的错误</p>
 <p>下面将介绍在Docker容器内，使用Jenkins和Gitea完成代码自动化打包、发布和部署的两种方案</p>
-<h1 id="方案一、不安装Gitea插件，自建webhook"><a href="#方案一、不安装Gitea插件，自建webhook" class="headerlink" title="方案一、不安装Gitea插件，自建webhook"></a>方案一、不安装Gitea插件，自建webhook</h1><h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>在gitea上创建项目，填写项目名称其他一律默认</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728144604955.png" alt="image-20200728144604955"></p>
-<p>在Jenkins上创建项目，类型选择自由风格的项目（项目名最好一致方便辨认），其他配置先不管，点保存<img src="jenkins-gitea-continuous-integration.assets/image-20200728145027609.png" alt="image-20200728145027609"></p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728144858415.png" alt="image-20200728144858415"></p>
-<h3 id="分配密钥"><a href="#分配密钥" class="headerlink" title="分配密钥"></a>分配密钥</h3><p>在本地生成公私钥对</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C "your_email"</span><br></pre></td></tr></table></figure>
-
-<p>在Jenkins的<strong>全局凭证</strong>里添加私钥，选择SSH，输入名称和创建时设的密码</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728150944078.png" alt="image-20200728150944078"></p>
-<p>在gitea项目的<strong>仓库设置</strong> -&gt; <strong>管理部署密钥</strong>，添加.pub结尾的公钥</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728152106056.png" alt="image-20200728152106056"></p>
-<h3 id="配置jenkins项目"><a href="#配置jenkins项目" class="headerlink" title="配置jenkins项目"></a>配置jenkins项目</h3><p>进入之前新建的jenkins项目配置页面，<strong>源码管理</strong>选择<strong>Git</strong>，填入gitea项目的SSH链接，凭证选刚才添加的</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728153933816.png" alt="image-20200728153933816"></p>
-<p>配置<strong>构建触发器</strong>，勾选<strong>触发远程构建</strong>，在身份验证令牌（也就是Token）输入一串自定义字符串</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728154321374.png" alt="image-20200728154321374"></p>
-<h3 id="创建webhook"><a href="#创建webhook" class="headerlink" title="创建webhook"></a>创建webhook</h3><p>进入gitea项目的<strong>仓库设置</strong> -&gt; <strong>管理web钩子</strong>，添加Gitea类型</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728154723498.png" alt="image-20200728154723498"></p>
-<p>目标URL模式如下：Jenkins访问地址/job/Jenkins项目名/build?token=Jenkins项目中配置的身份验证令牌，其他默认</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728155307582.png" alt="image-20200728155307582"></p>
-<h3 id="测试推送"><a href="#测试推送" class="headerlink" title="测试推送"></a>测试推送</h3><p>进入刚才新建的web钩子，测试推送</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728160011918.png" alt="image-20200728160011918"></p>
-<blockquote>
-<p>不过这里有个问题，这个链接在不同的服务器上使用是没有问题的，但是如果<strong>gitea和Jenkins运行在同一台服务器上会请求失败报403错误</strong>：HTTP ERROR 403 No valid crumb was included in the request</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728161128096.png" alt="image-20200728161128096"></p>
-<p>这是因为Jenkins的跨域问题。不过自2.204.6版本开始，Jenkins就删除了禁用跨站请求伪造保护的功能，现在需要添加凭证到请求中才可访问</p>
-</blockquote>
-<p>进入jenkins个人设置 -&gt; API Token，生成新token并复制</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728160314948.png" alt="image-20200728160314948"></p>
-<p>重新配置web钩子，新模式如下：jenkinsID(登录名):token@Jenkins访问地址/job/Jenkins项目名/build?token=Jenkins项目中配置的身份验证令牌</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728160729339.png" alt="image-20200728160729339"></p>
-<p>测试推送，成功</p>
-<p><img src="jenkins-gitea-continuous-integration.assets/image-20200728161415907.png" alt="image-20200728161415907"></p>
-<h1 id="方案二、使用Gitea插件，自动生成webhook（推荐）"><a href="#方案二、使用Gitea插件，自动生成webhook（推荐）" class="headerlink" title="方案二、使用Gitea插件，自动生成webhook（推荐）"></a>方案二、使用Gitea插件，自动生成webhook（推荐）</h1><ol>
-<li>使用gitea插件，在插件管理搜索gitea安装完成后重启</li>
-<li>进入Jenkins的系统配置，找到gitea     servers，输入服务名称和gitea的访问地址</li>
-</ol>
-<p>勾选Manage hooks管理钩子，让Jenkins配置你gitea项目的webhook</p>
-<p>添加凭证，推荐使用gitea管理员的token，范围选择系统</p>
-<ol>
-<li>使用管理员账户登录gitea，创建组织，创建一个用户如“Jenkins”添加到刚才创建的组织中退出gitea，用“Jenkins”账号登录，进入个人设置 -&gt; 应用，生成token并复制</li>
-<li>在Jenkins新建任务，类型选择Gitea     Organization，Servers服务会自动选择为系统配置里设置的。添加凭证，用刚才“Jenkins”用户生成的token。Owner组织名称需要和gitea的组织名一致，保存</li>
-<li>在gitea组织内创建项目，项目的根目录下需要创建Jenkinsfile文件（Gitea     Organization就是靠Jenkinsfile文件来识别项目）。创建完毕后，在Jenkins的组织文件夹（刚才新建的任务）内会生成同名项目，在gitea的项目设置里，也会自动生成webhook</li>
-</ol>
-<p>Jenkinsfile是脚本文件，和Linux的shell文件类似，具体操作看第七周的最后四节或<a href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/" target="_blank" rel="noopener">官方文档</a></p>
-
+        
       
     </div>
 
