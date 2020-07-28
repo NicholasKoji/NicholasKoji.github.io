@@ -112,7 +112,7 @@
 <p><img src="/images/image-20200728161128096.png" alt="image-20200728161128096"></p>
 <p>这是因为Jenkins的跨域问题。不过自2.204.6版本开始，Jenkins就删除了禁用跨站请求伪造保护的功能，现在需要添加凭证到请求中才可访问</p>
 </blockquote>
-<p>进入jenkins个人设置 -&gt; <strong>API Token</strong>，生成新token并复制</p>
+<p>进入jenkins<strong>个人设置</strong> -&gt; <strong>API Token</strong>，生成新token并复制</p>
 <p><img src="/images/image-20200728160314948.png" alt="image-20200728160314948"></p>
 <p>重新配置web钩子，新模式如下：jenkinsID(登录名):token@Jenkins访问地址/job/Jenkins项目名/build?token=Jenkins项目中配置的身份验证令牌</p>
 <p><img src="/images/image-20200728160729339.png" alt="image-20200728160729339"></p>
